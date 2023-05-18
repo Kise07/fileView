@@ -36,4 +36,8 @@ for (let i = 0; i < filesArr.length; i++) {
     let fileContent = fs.readFileSync(filesArr[i]);
     content = content + fileContent + '\n'; // appending data with {\n}
 }
-console.log(content);
+// console.log(content);
+
+// * > 2) node view.js [Multi-FilePaths] => displays the contents of all files in terminal in given order < *
+let contentArr = content.split('\n'); // store files data in Array format
+console.table(contentArr);
