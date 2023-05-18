@@ -3,7 +3,7 @@ let input = process.argv;
 // console.log(input);
 
 let inputArr = process.argv.slice(2); // remove 1st {2} paths
-console.log(inputArr);
+// console.log(inputArr);
 
 let filesArr = []; // empty files array!
 let optionsArr = []; // empty options array!
@@ -40,4 +40,32 @@ for (let i = 0; i < filesArr.length; i++) {
 
 // * > 2) node view.js [Multi-FilePaths] => displays the contents of all files in terminal in given order < *
 let contentArr = content.split('\n'); // store files data in Array format
-console.table(contentArr);
+// console.table(contentArr);
+
+// * > 3) node view.js [Options] [Filepaths] => ignores the spaces\new lines
+// =======> -s command -> checking if {-s} is present or not
+let tempArr = []; // data storing in empty Array
+
+// See README.md for Edge Cases & All
+let isSpresent = optionsArr.includes('-s'); // 3rd Edge case
+// Option -s:
+if (isSpresent) { // Step 1:
+    for (let i = 1; i < contentArr.length[i]; i++) {
+        if (contentArr[i] == '' && contentArr[i - 1] == '') { // if -> checking if lines are {empty}
+            contentArr[i] = null;
+        } else if (contentArr[i] == '' && contentArr[i - 1] == null) { // else -> checking if {empty OR null}
+            contentArr[i] = null;
+        }
+    }
+    // console.log(contentArr);
+
+    // Step 2: push everything in tempArr except null values
+    for (let i = 0; i < contentArr.length; i++) {
+        if (contentArr[i] != null) { // if -> checking whether or not line is null
+            tempArr.push(contentArr[i]);
+        }
+    }
+    console.log(`data after removing extra lines\n`, tempArr);
+}
+
+contentArr = tempArr; // storing data from ContentArr to tempArr
