@@ -1,120 +1,95 @@
-const fs = require('fs'); // fileSystem Module
-let input = process.argv;
-// console.log(input);
+const fs = require('fs');
 
-let inputArr = process.argv.slice(2); // remove 1st {2} paths
-// console.log(inputArr);
+let inputArr = process.argv.slice(2);
+let filesArr = [];
+let optionsArr = [];
 
-let filesArr = []; // empty files array!
-let optionsArr = []; // empty options array!
-
-// =======> Placing files path to be read in filesArr
+// Step 1: Parsing command line arguments
 for (let i = 0; i < inputArr.length; i++) {
-    let firstChar = inputArr[i].charAt(0); // 1st character of inputArr
-    // console.log(firstChar);
-    if (firstChar == '-') { // checking 1st character
-        optionsArr.push(inputArr[i]); // push it to optionsArr
+    let firstChar = inputArr[i].charAt(0);
+    if (firstChar === '-') {
+        optionsArr.push(inputArr[i]); // Collecting options like -s, -n, -b
     } else {
-        filesArr.push(inputArr[i]); // push it to filesArr
+        filesArr.push(inputArr[i]); // Collecting file paths
     }
 }
-// console.log('files to be read are: ' + filesArr); // all files path
 
-// =======> Check if all the files are present as given in terminal
+// Step 2: Checking if all the files exist
 for (let i = 0; i < filesArr.length; i++) {
-    let doesExist = fs.existsSync(filesArr[i]); // check files exist
-    if (!doesExist) { // if not exist
-        console.log('One or more files does not exists');
-        process.exit(); // ends the |^|{process.argv}|^|
+    let doesExist = fs.existsSync(filesArr[i]);
+    if (!doesExist) {
+        console.log('One or more files do not exist');
+        process.exit();
     }
 }
 
-// *** >>> 1) node view.js [filepath] => displays the contents of a file in terminal <<< ***
-// =======> Content Read & Appending Starts
-let content = ''; // empty variable for storing data
+let content = '';
+
+// Step 3: Reading file contents and storing them in 'content' variable
 for (let i = 0; i < filesArr.length; i++) {
     let fileContent = fs.readFileSync(filesArr[i]);
-    content = content + fileContent + '\n'; // appending data with {\n}
+    content = content + fileContent + '\n';
 }
-// console.log(content);
 
-// * > 2) node view.js [Multi-FilePaths] => displays the contents of all files in terminal in given order < *
-let contentArr = content.split('\n'); // store files data in Array format
-// console.table(contentArr);
+let contentArr = content.split('\n');
 
-// * > 3) node view.js [Options] [Filepaths] => ignores the spaces\new lines
-// =======> -s command -> checking if {-s} is present or not
-let tempArr = []; // data storing in empty Array
+let isSpresent = optionsArr.includes('-s');
 
-// See README.md for Edge Cases & All
-let isSpresent = optionsArr.includes('-s'); // 3rd Edge case
-// Option -s:
-if (isSpresent) { // Step 1:
-    for (let i = 1; i < contentArr.length[i]; i++) {
-        if (contentArr[i] == '' && contentArr[i - 1] == '') { // if -> checking if lines are {empty}
+// Step 4: Handling the -s option
+if (isSpresent) {
+    let tempArr = [];
+
+    // Step 4.1: Removing extra empty lines
+    for (let i = 1; i < contentArr.length; i++) {
+        if (contentArr[i] == '' && contentArr[i - 1] == '') {
             contentArr[i] = null;
-        } else if (contentArr[i] == '' && contentArr[i - 1] == null) { // else -> checking if {empty OR null}
+        } else if (contentArr[i] == '' && contentArr[i - 1] == null) {
             contentArr[i] = null;
         }
     }
-    // console.log(contentArr);
 
-    // Step 2: push everything in tempArr except null values
+    // Step 4.2: Creating a new array without null values
     for (let i = 0; i < contentArr.length; i++) {
-        if (contentArr[i] != null) { // if -> checking whether or not line is null
+        if (contentArr[i] != null) {
             tempArr.push(contentArr[i]);
         }
     }
-    console.log(`data after removing extra lines\n`, tempArr);
+
+    // console.log(`Data after removing extra lines:\n`, tempArr);
+    contentArr = tempArr;
 }
 
-contentArr = tempArr; // storing data from ContentArr to tempArr
+// Rest of your code for handling other options
 
-// * > 4&5) node view.js [Options] [Filepaths] => 4 no.s all lines & 5 no.s only code lines
-let indexOfN = optionsArr.indexOf('-n');
-let indexOfB = optionsArr.indexOf('-b');
-// if -n OR -b is not found, return -1
-
-// checking for `first comes, first serves` either -n OR -b
-let finalOption = ''; // empty variable
-
-// if -n OR -b are present here! // 1 Edge case
-if (indexOfN != -1 && indexOfB != -1) {
-    if (indexOfN < indexOfB) {
-        finalOption = '-n'; // empty => -n
-    } else {
-        finalOption = '-b'; // empty => -b
-    }
-} else { // either -n OR -b is present here! // 2nd Edge case
-    if (indexOfN != -1) {
-        finalOption = '-n';
-    } else if (indexOfB != -1) {
-        finalOption = '-b';
-    }
+// Step 5: Checking other options independently and combined
+if (optionsArr.includes('-n') && optionsArr.includes('-b')) {
+    console.log(`Options -n and -b cannot be used together.`);
+    process.exit();
 }
 
-// ====> calling of function by evaluating finalOption
-if (finalOption == '-n') {
-    modifyContentByN(); // -n function call
-} else if (finalOption == '-b') {
-    modifyContentByB(); // -b function call
+if (optionsArr.includes('-n')) {
+    modifyContentByN();
 }
 
-// Option -n:
+if (optionsArr.includes('-b')) {
+    modifyContentByB();
+}
+
+console.log(`Data after applying options:`, contentArr);
+
+// Option -n: Numbers all the lines
 function modifyContentByN() {
     for (let i = 0; i < contentArr.length; i++) {
-        contentArr[i] = (i + 1) + ') ' + contentArr[i]; // Alternation of using Array.map = same code
+        contentArr[i] = (i + 1) + ') ' + contentArr[i];
     }
 }
 
-console.log(`data after using -n OR -b`, contentArr);
-
-// Option -b:
+// Option -b: Numbers only lines with code
 function modifyContentByB() {
-    let count = 1; // count for Code's Lines
+    let count = 1;
     for (let i = 0; i < contentArr.length; i++) {
-        if (contentArr[i] != '') { // checking whether line is empty
-            contentArr[i] = count + ') ' + contentArr[i]; // no. Code's Lines
+        if (contentArr[i] != '') {
+            contentArr[i] = count + ') ' + contentArr[i];
             count++;
         }
     }
