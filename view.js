@@ -69,3 +69,53 @@ if (isSpresent) { // Step 1:
 }
 
 contentArr = tempArr; // storing data from ContentArr to tempArr
+
+// * > 4&5) node view.js [Options] [Filepaths] => 4 no.s all lines & 5 no.s only code lines
+let indexOfN = optionsArr.indexOf('-n');
+let indexOfB = optionsArr.indexOf('-b');
+// if -n OR -b is not found, return -1
+
+// checking for `first comes, first serves` either -n OR -b
+let finalOption = ''; // empty variable
+
+// if -n OR -b are present here! // 1 Edge case
+if (indexOfN != -1 && indexOfB != -1) {
+    if (indexOfN < indexOfB) {
+        finalOption = '-n'; // empty => -n
+    } else {
+        finalOption = '-b'; // empty => -b
+    }
+} else { // either -n OR -b is present here! // 2nd Edge case
+    if (indexOfN != -1) {
+        finalOption = '-n';
+    } else if (indexOfB != -1) {
+        finalOption = '-b';
+    }
+}
+
+// ====> calling of function by evaluating finalOption
+if (finalOption == '-n') {
+    modifyContentByN(); // -n function call
+} else if (finalOption == '-b') {
+    modifyContentByB(); // -b function call
+}
+
+// Option -n:
+function modifyContentByN() {
+    for (let i = 0; i < contentArr.length; i++) {
+        contentArr[i] = (i + 1) + ') ' + contentArr[i]; // Alternation of using Array.map = same code
+    }
+}
+
+console.log(`data after using -n OR -b`, contentArr);
+
+// Option -b:
+function modifyContentByB() {
+    let count = 1; // count for Code's Lines
+    for (let i = 0; i < contentArr.length; i++) {
+        if (contentArr[i] != '') { // checking whether line is empty
+            contentArr[i] = count + ') ' + contentArr[i]; // no. Code's Lines
+            count++;
+        }
+    }
+}
