@@ -10,6 +10,11 @@ fileView is a command-line tool that allows you to view the contents of files wi
 - Number all the lines using the `-n` option.
 - Number only lines with code using the `-b` option.
 
+## Demo
+https://github.com/Kise07/fileView/assets/73417521/23b6fd5c-0cf4-4cc1-be44-3815ff4268b3
+
+
+
 ## Usage
 
 To use fileView, follow the instructions below:
@@ -64,3 +69,6 @@ ith the `-b` option:
 ```bash
 node view.js -b file1.txt file2.txt
 ```
+## License
+
+This project is licensed under the [MIT License](LICENSE).
